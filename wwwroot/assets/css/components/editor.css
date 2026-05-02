@@ -197,6 +197,13 @@
   min-height: 100%;
   position: relative;
   z-index: 1;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  tab-size: inherit;
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  white-space: inherit;
 }
 
 #editor {
@@ -204,7 +211,7 @@
   inset: 0;
   outline: none;
   resize: none;
-  color: var(--text-primary);
+  color: transparent;
   -webkit-text-fill-color: transparent;
   caret-color: var(--text-primary);
   overflow-y: auto;
