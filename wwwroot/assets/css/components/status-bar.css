@@ -1,0 +1,44 @@
+/* ── Status Bar (Landing) ── */
+
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 48px;
+  border-top: 1px solid var(--grey-2);
+}
+
+.status-left,
+.status-right {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--grey-4);
+  letter-spacing: 0.1em;
+  display: flex;
+  gap: 32px;
+}
+
+.status-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.status-dot::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  background: var(--white);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}

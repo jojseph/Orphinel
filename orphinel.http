@@ -1,0 +1,11 @@
+@orphinel_HostAddress = http://localhost:5154
+
+POST {{orphinel_HostAddress}}/api/interpreter/run
+Content-Type: application/json
+
+{
+  "source": "SCRIPT AREA\nSTART SCRIPT\nDECLARE INT x = 5\nPRINT: x\nEND SCRIPT",
+  "inputs": []
+}
+
+###

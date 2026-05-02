@@ -1,0 +1,48 @@
+/* ── Editor Footer ── */
+
+.footer {
+  height: 26px;
+  background: var(--bg-header);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.footer-left {
+  display: flex;
+  gap: 16px;
+}
+
+.footer-left span {
+  color: var(--text-dim);
+}
+
+.footer-right {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.status-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--token-type); /* using type green for status */
+}
+
+.status-indicator {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--token-type);
+}

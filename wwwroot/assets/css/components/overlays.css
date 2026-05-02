@@ -1,0 +1,48 @@
+/* ── Overlays — Scanlines, Noise, Corner Marks ── */
+
+.scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+}
+
+.noise {
+  position: fixed;
+  inset: -50%;
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0.018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+  animation: noiseAnim 0.5s steps(2) infinite;
+}
+
+@keyframes noiseAnim {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(-2%, -1%); }
+  50%  { transform: translate(1%, 2%); }
+  75%  { transform: translate(-1%, 1%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Corner marks */
+.corner {
+  position: fixed;
+  z-index: 15;
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
+.corner-tl { top: 20px; left: 20px; border-top: 1px solid var(--grey-3); border-left: 1px solid var(--grey-3); }
+.corner-tr { top: 20px; right: 20px; border-top: 1px solid var(--grey-3); border-right: 1px solid var(--grey-3); }
+.corner-bl { bottom: 20px; left: 20px; border-bottom: 1px solid var(--grey-3); border-left: 1px solid var(--grey-3); }
+.corner-br { bottom: 20px; right: 20px; border-bottom: 1px solid var(--grey-3); border-right: 1px solid var(--grey-3); }

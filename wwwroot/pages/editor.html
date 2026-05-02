@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- Zoomed to 110% per user preference for a larger UI -->
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Orphinel Editor - Write and run Orphinel code in your browser.">
+  <title>Orphinel - Editor</title>
+
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/reset.css">
+  <link rel="stylesheet" href="../assets/css/components/editor.css">
+  <link rel="stylesheet" href="../assets/css/components/output.css">
+  <link rel="stylesheet" href="../assets/css/components/footer.css">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+
+<body
+  style="height:100vh;width:100%;background:var(--bg-editor);color:var(--text-primary);font-family:var(--font-mono);overflow:hidden;display:flex;flex-direction:column;">
+
+  <header class="editor-header">
+    <a href="../index.html" style="text-decoration: none;">
+      <span class="logo">orphinel</span>
+    </a>
+    <div class="header-right">
+      <button class="run-btn theme-btn" id="themeToggleBtn" onclick="toggleTheme()"
+        style="background:transparent; color:var(--text-primary);" title="Toggle theme">
+        <i id="iconMoon" data-lucide="moon" width="16" height="16"></i>
+        <i id="iconSun" data-lucide="sun" width="16" height="16" style="display:none;"></i>
+      </button>
+      <button class="run-btn" id="runBtn" onclick="runCode()">
+        <svg viewBox="0 0 10 10" fill="currentColor">
+          <polygon points="0,0 10,5 0,10" />
+        </svg>
+        run
+      </button>
+    </div>
+  </header>
+
+  <div class="workspace">
+    <div class="pane editor-pane">
+      <div class="pane-header">
+        <div class="pane-dot"></div>
+        <span class="pane-label">editor</span>
+        <span class="lang-tag">orphinel</span>
+      </div>
+      <div class="editor-body">
+        <div class="line-numbers" id="lineNumbers">
+          <span class="active">1</span>
+        </div>
+        <div class="editor-surface">
+          <pre id="editorHighlight" aria-hidden="true"><div id="activeLineIndicator"></div><code></code></pre>
+          <textarea id="editor" spellcheck="false" autocorrect="off" autocapitalize="off">SCRIPT AREA
+START SCRIPT
+DECLARE INT x = 5
+PRINT: x
+END SCRIPT</textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider" id="divider"></div>
+
+    <div class="pane output-pane">
+      <div class="pane-header">
+        <div class="pane-dot"></div>
+        <span class="pane-label">output</span>
+      </div>
+      <div class="output-body" id="outputBody">
+        <div class="output-prompt">// press run to execute</div>
+        <div class="cursor-line">
+          <span class="cursor"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left">
+      <span>ORPHINEL</span> v0.1.0 - alpha.
+    </div>
+    <div class="footer-right">
+      <div id="stat-lines">1 lines</div>
+      <div id="stat-chars">0 chars</div>
+      <div class="status-group" id="status-group">
+        <div class="status-indicator" id="status-indicator"></div>
+        <span id="stat-status">READY</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/editor-main.js"></script>
+  <script>lucide.createIcons();</script>
+</body>
+
+</html>

@@ -1,0 +1,108 @@
+/* ── Terminal Panel ── */
+
+#terminal {
+  position: fixed;
+  bottom: 56px;
+  left: 50%;
+  transform: translateX(-50%) translateY(calc(100% + 20px));
+  z-index: 30;
+  width: min(680px, 90vw);
+  background: #000;
+  border: 1px solid var(--grey-3);
+  border-radius: 3px;
+  padding: 0;
+  pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  opacity: 0;
+  box-shadow: 0 -8px 60px rgba(255, 255, 255, 0.04), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+#terminal.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.term-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--grey-2);
+  background: var(--grey-1);
+}
+
+.term-title {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--grey-5);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.term-controls {
+  display: flex;
+  gap: 7px;
+}
+
+.term-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--grey-3);
+}
+
+.term-body {
+  padding: 14px 16px 16px;
+  height: 148px;
+  overflow: hidden;
+  position: relative;
+}
+
+.term-body::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: linear-gradient(to bottom, transparent, #000);
+  pointer-events: none;
+}
+
+#term-log {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#term-log li {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--grey-4);
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#term-log li.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#term-log li .tag { color: var(--white); font-weight: 500; }
+#term-log li .ok  { color: #ffffff; }
+#term-log li .warn { color: var(--grey-5); }
+#term-log li .dim  { color: var(--grey-3); }
+
+.term-cursor {
+  display: none;
+}
+
+

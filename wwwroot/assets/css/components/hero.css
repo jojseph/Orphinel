@@ -1,0 +1,78 @@
+/* ── Hero Section ── */
+
+#ui {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+  z-index: 10;
+  pointer-events: all;
+}
+
+.overline {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 300;
+  color: var(--grey-4);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.overline::before,
+.overline::after {
+  content: '';
+  display: block;
+  width: 32px;
+  height: 1px;
+  background: var(--grey-3);
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(4rem, 9vw, 9rem);
+  color: var(--white);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  margin-bottom: 28px;
+  text-shadow:
+    0 0 80px rgba(255, 255, 255, 0.12),
+    0 0 120px rgba(255, 255, 255, 0.06);
+  user-select: none;
+}
+
+h1 em {
+  font-style: normal;
+  color: var(--grey-6);
+}
+
+.subheadline {
+  font-family: var(--font-mono);
+  font-size: clamp(0.85rem, 1.8vw, 1.2rem);
+  font-weight: 300;
+  color: var(--grey-5);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  margin-bottom: 52px;
+}
+
+.subheadline strong {
+  color: var(--grey-6);
+  font-weight: 500;
+}

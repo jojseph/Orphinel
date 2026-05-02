@@ -1,0 +1,95 @@
+/* ── Design Tokens ──
+ * Shared variables for both landing page and editor.
+ * All colors, typography, and spacing should reference these tokens.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+:root {
+  /* ── Colors (Landing) ── */
+  --black: #000000;
+  --white: #ffffff;
+  --grey-1: #111111;
+  --grey-2: #1a1a1a;
+  --grey-3: #333333;
+  --grey-4: #666666;
+  --grey-5: #999999;
+  --grey-6: #cccccc;
+
+  /* ── Colors (Editor) ── */
+  --bg-editor: #000000;
+  --bg-output: #111111;
+  --bg-header: #0a0a0a;
+  --border: #2a2a2a;
+  --border-light: #1f1f1f;
+  --text-primary: #ffffff;
+  --text-dim: #333333;
+  --text-muted: #555555;
+  --text-label: #3a3a3a;
+  --accent: #ffffff;
+
+  /* Button, Scrollbar, Selection */
+  --btn-hover: #cccccc;
+  --btn-active: #999999;
+  --btn-running-bg: #333333;
+  --btn-running-text: #ffffff;
+  --scrollbar-thumb: #222222;
+  --selection-bg: rgba(255, 255, 255, 0.2);
+  
+  /* Output Colors */
+  --output-error: #888888;
+  --output-dim: #444444;
+
+  /* ── Syntax Tokens (Dark) ── */
+  --token-keyword: #60a5fa;
+  --token-type: #2dd4bf;
+  --token-boolean: #4ade80;
+  --token-number: #fb923c;
+  --token-string: #4ade80;
+  --token-comment: #6b7280;
+  --token-operator: #f472b6;
+  --token-special: #fbbf24;
+  --token-identifier: #d6deeb;
+
+  /* ── Typography ── */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  /* ── Transitions ── */
+  --ease-default: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 0.15s;
+  --duration-normal: 0.3s;
+}
+
+[data-theme="light"] {
+  --bg-editor: #ffffff;
+  --bg-output: #f7f7f7;
+  --bg-header: #f2f2f2;
+  --border: #e0e0e0;
+  --border-light: #eeeeee;
+  --text-primary: #111111;
+  --text-dim: #aaaaaa;
+  --text-muted: #777777;
+  --text-label: #888888;
+  --accent: #000000;
+
+  --btn-hover: #666666;
+  --btn-active: #333333;
+  --btn-running-bg: #e0e0e0;
+  --btn-running-text: #000000;
+  --scrollbar-thumb: #cccccc;
+  --selection-bg: rgba(0, 0, 0, 0.15);
+
+  --output-error: #d73a49;
+  --output-dim: #888888;
+
+  --token-keyword: #1d4ed8;
+  --token-type: #0d9488;
+  --token-boolean: #16a34a;
+  --token-number: #ea580c;
+  --token-string: #16a34a;
+  --token-comment: #9ca3af;
+  --token-operator: #db2777;
+  --token-special: #f59e0b;
+  --token-identifier: #24292e;
+}
