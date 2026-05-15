@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="LEXOR — Language Documentation. A strongly-typed teaching language built for Senior High School programmers.">
+  <title>LEXOR — Documentation</title>
+
+  <!-- Apply saved theme before paint -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('orphinel-theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+
+  <!-- Inter for body, JetBrains Mono inherited from variables.css -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="../assets/css/variables.css">
+
+  <style>
+/* ── Design Tokens ──
+ * Shared variables for both landing page and editor.
+ * Themes: data-theme="dark" (default, Soft Charcoal) | data-theme="light" (paper).
+ * All colors should reference these tokens.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;800;900&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+
+:root {
+  /* ── Landing page palette (unchanged, theme-independent) ── */
+  --black: #000000;
+  --white: #ffffff;
+  --grey-1: #111111;
+  --grey-2: #1a1a1a;
+  --grey-3: #333333;
+  --grey-4: #666666;
+  --grey-5: #999999;
+  --grey-6: #cccccc;
+
+  /* ── Typography ── */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  /* ── Transitions ── */
+  --ease-default: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 0.15s;
+  --duration-normal: 0.3s;
+  --theme-transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+/* ── Dark theme — Matte Black (default)
+ *  Lifted just past pure-black to avoid "halation" (text bloom on jet black),
+ *  neutral undertone (no blue tint) for long-session comfort.
+ *  #121212 is the Material Design recommended dark surface.
+ */
+:root,
+[data-theme="dark"] {
+  /* Surfaces */
+  --bg-editor: #121212;
+  --bg-output: #0e0e0e;
+  --bg-header: #0a0a0a;
+  --bg-elevated: #1c1c1c;
+
+  /* Borders */
+  --border: #2a2a2a;
+  --border-light: #1f1f1f;
+
+  /* Text — neutral greys, lifted out of pure-white / near-invisible ranges */
+  --text-primary: #e8e8e8;   /* softer than pure white, no blue tint */
+  --text-secondary: #b8b8b8;
+  --text-muted: #7c7c7c;
+  --text-dim: #5a5a5a;       /* lifted slightly to stay visible on matte black */
+  --text-label: #6a6a6a;
+
+  /* Accent (run button & highlights) */
+  --accent: #e8e8e8;
+  --accent-hover: #d0d0d0;
+  --accent-active: #a8a8a8;
+  --accent-fg: #0a0a0a;
+
+  /* Selection (slight cool accent kept on purpose) */
+  --selection-bg: #2d3a5a;
+
+  /* Syntax highlighting — subtle, harmonized */
+  --syntax-keyword: #c8a8e9;  /* soft lavender */
+  --syntax-string:  #e0b378;  /* warm amber */
+  --syntax-number:  #7fc4cc;  /* muted teal */
+  --syntax-comment: #5c5c66;  /* dim grey, italic */
+  --syntax-fn:      #d4b572;
+
+  /* Status */
+  --status-success: #87c55e;
+  --status-warning: #e5c07b;
+  --status-error:   #e06c6c;
+
+  /* Scrollbar */
+  --scrollbar-thumb: #2e2e2e;
+  --scrollbar-thumb-hover: #3a3a3a;
+}
+
+/* ── Light theme — Clean White
+ *  Pure white main surface, neutral cool-greys for hierarchy.
+ *  No warm/cream/beige tones. Inspired by Linear, Notion, GitHub.
+ */
+[data-theme="light"] {
+  /* Surfaces — all pure white, borders carry hierarchy */
+  --bg-editor: #ffffff;
+  --bg-output: #ffffff;
+  --bg-header: #ffffff;
+  --bg-elevated: #ffffff;
+
+  /* Borders — neutral grey */
+  --border: #e5e5e5;
+  --border-light: #f0f0f0;
+
+  /* Text — neutral grey scale (Tailwind neutral) */
+  --text-primary: #171717;
+  --text-secondary: #404040;
+  --text-muted: #737373;
+  --text-dim: #a3a3a3;
+  --text-label: #525252;
+
+  /* Accent — dark button on white */
+  --accent: #171717;
+  --accent-hover: #262626;
+  --accent-active: #404040;
+  --accent-fg: #ffffff;
+
+  /* Selection — soft blue, common in light editors */
+  --selection-bg: #bfdbfe;
+
+  /* Syntax highlighting — tuned for pure white bg */
+  --syntax-keyword: #7c3aed;  /* violet */
+  --syntax-string:  #a8480a;  /* burnt orange */
+  --syntax-number:  #0e7490;  /* deep teal */
+  --syntax-comment: #9ca3af;  /* neutral grey */
+  --syntax-fn:      #854d0e;  /* amber */
+
+  /* Status */
+  --status-success: #16803d;
+  --status-warning: #a16207;
+  --status-error:   #b91c1c;
+
+  /* Scrollbar — neutral grey */
+  --scrollbar-thumb: #d4d4d8;
+  --scrollbar-thumb-hover: #a1a1aa;
+}
+
+/* ── CSS Reset ── */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ── LEXOR Docs Page ── */
+
+html, body {
+  height: 100%;
+  background: var(--bg-editor);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: var(--theme-transition);
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ──────────────────────────────────────────────────────
+   Sidebar
+   ────────────────────────────────────────────────────── */
+.sidebar {
+  width: 264px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: var(--bg-header);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: var(--theme-transition);
+  z-index: 50;
+}
+
+.sidebar-header {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text-primary);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebar-logo::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  background: var(--text-primary);
+  display: inline-block;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 28px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 4px;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.theme-toggle:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+.theme-toggle svg { width: 14px; height: 14px; display: block; }
+
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 0 32px;
+}
+
+.sidebar-nav::-webkit-scrollbar { width: 6px; }
+.sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+.sidebar-nav::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+
+.nav-group {
+  margin-bottom: 20px;
+}
+
+.nav-group-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 24px;
+  margin-bottom: 8px;
+  user-select: none;
+}
+
+.nav-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-group li a {
+  display: block;
+  padding: 6px 24px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+
+.nav-group li a:hover {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+}
+
+.nav-group li a.active {
+  color: var(--text-primary);
+  border-left-color: var(--text-primary);
+  font-weight: 500;
+  background: var(--bg-elevated);
+}
+
+/* ──────────────────────────────────────────────────────
+   Mobile sidebar toggle
+   ────────────────────────────────────────────────────── */
+.sidebar-toggle {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  width: 36px;
+  height: 36px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 0;
+}
+
+.sidebar-toggle svg { width: 18px; height: 18px; }
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 40;
+}
+
+/* ──────────────────────────────────────────────────────
+   Main content
+   ────────────────────────────────────────────────────── */
+.docs-main {
+  flex: 1;
+  min-width: 0;
+  margin-left: 264px; /* make room for the fixed sidebar */
+}
+
+.docs-content {
+  max-width: 760px;
+  padding: 64px 56px 120px;
+  margin: 0 auto;
+}
+
+/* Typography */
+.docs-content h1,
+.docs-content h2,
+.docs-content h3 {
+  color: var(--text-primary);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  scroll-margin-top: 24px;
+}
+
+.docs-content h1 {
+  font-size: 36px;
+  line-height: 1.15;
+  margin: 0 0 12px;
+}
+
+.docs-content h1 + .lead {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  margin: 0 0 40px;
+  font-weight: 400;
+}
+
+.docs-content h2 {
+  font-size: 26px;
+  line-height: 1.2;
+  margin: 56px 0 16px;
+  padding-top: 8px;
+}
+
+.docs-content h3 {
+  font-size: 18px;
+  line-height: 1.3;
+  margin: 32px 0 12px;
+  font-weight: 600;
+}
+
+.docs-content > section + section {
+  margin-top: 8px;
+}
+
+.docs-content p,
+.docs-content ul,
+.docs-content ol {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+}
+
+.docs-content ul,
+.docs-content ol {
+  padding-left: 24px;
+}
+
+.docs-content li { margin-bottom: 6px; }
+
+.docs-content li::marker { color: var(--text-muted); }
+
+.docs-content strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.docs-content a {
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s;
+}
+.docs-content a:hover { text-decoration-color: var(--text-primary); }
+
+/* Inline code */
+.docs-content :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* ──────────────────────────────────────────────────────
+   Code blocks
+   ────────────────────────────────────────────────────── */
+.code-block {
+  position: relative;
+  margin: 16px 0 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.code-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  text-transform: uppercase;
+}
+.code-copy:hover {
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+.code-copy.copied { color: var(--status-success); border-color: var(--status-success); }
+.code-copy svg { width: 12px; height: 12px; }
+
+.code-block pre {
+  margin: 0;
+  padding: 16px 18px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  white-space: pre;
+  tab-size: 2;
+}
+
+.code-block pre::-webkit-scrollbar { height: 8px; }
+.code-block pre::-webkit-scrollbar-track { background: transparent; }
+.code-block pre::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+
+/* Output box */
+.output-box {
+  margin: -8px 0 20px;
+  background: var(--bg-output);
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 12px 18px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  white-space: pre;
+  overflow-x: auto;
+  position: relative;
+}
+.output-box::before {
+  content: 'OUTPUT';
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-family: var(--font-mono);
+}
+
+/* Output box right after a code block — pull it tight */
+.code-block + .output-box {
+  margin-top: -16px;
+  border-radius: 0 0 8px 8px;
+  border-top: 1px dashed var(--border);
+}
+
+/* Syntax tokens (reuse editor palette via tokens) */
+.tok-keyword { color: var(--token-keyword); font-weight: 500; }
+.tok-string  { color: var(--token-string); }
+.tok-number  { color: var(--token-number); }
+.tok-comment { color: var(--token-comment); font-style: italic; }
+.tok-fn      { color: var(--token-identifier); }
+
+/* ──────────────────────────────────────────────────────
+   Tables
+   ────────────────────────────────────────────────────── */
+.docs-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0 24px;
+  font-size: 14px;
+  background: var(--bg-editor);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.docs-content thead {
+  background: var(--bg-header);
+}
+
+.docs-content th {
+  text-align: left;
+  padding: 10px 16px;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid var(--border);
+}
+
+.docs-content td {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border-light);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.docs-content tr:first-child td { border-top: none; }
+
+.docs-content td code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+/* ──────────────────────────────────────────────────────
+   Callouts
+   ────────────────────────────────────────────────────── */
+.callout {
+  margin: 20px 0;
+  padding: 14px 18px;
+  background: var(--bg-elevated);
+  border-left: 3px solid var(--text-muted);
+  border-radius: 0 6px 6px 0;
+  font-size: 14.5px;
+  color: var(--text-secondary);
+}
+.callout strong { color: var(--text-primary); }
+
+/* ──────────────────────────────────────────────────────
+   Footer in docs
+   ────────────────────────────────────────────────────── */
+.docs-footer {
+  margin-top: 80px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+.docs-footer a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.docs-footer a:hover { color: var(--text-primary); }
+
+/* ──────────────────────────────────────────────────────
+   Responsive — sidebar collapses below 920px
+   ────────────────────────────────────────────────────── */
+@media (max-width: 920px) {
+  .sidebar-toggle {
+    display: inline-flex;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.25s ease, var(--theme-transition);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  body.sidebar-open .sidebar { transform: translateX(0); }
+  body.sidebar-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
+
+  /* Hide the burger when the drawer is open so it doesn't cover the LEXOR logo.
+     User can close the drawer by tapping the backdrop or any sidebar link. */
+  body.sidebar-open .sidebar-toggle {
+    opacity: 0;
+    transform: scale(0.9);
+    pointer-events: none;
+  }
+
+  /* Sidebar becomes a drawer below 920px — main fills full width */
+  .docs-main { margin-left: 0; }
+  .docs-content { padding: 64px 24px 80px; }
+}
+
+@media (max-width: 600px) {
+  .docs-content h1 { font-size: 30px; }
+  .docs-content h1 + .lead { font-size: 16px; margin-bottom: 32px; }
+  .docs-content h2 { font-size: 22px; margin-top: 44px; }
+  .docs-content { padding: 56px 18px 64px; }
+  .code-block pre { font-size: 12.5px; }
+}
+
+</style>
+<style>
+.ha-img-placeholder{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;background:#f4f4f5;border:1px dashed #d4d4d8;border-radius:8px;color:#71717a;font-size:12px;font-family:system-ui,sans-serif;min-height:80px;padding:16px;box-sizing:border-box;animation:ha-img-pulse 1.5s ease-in-out infinite}
+.ha-img-placeholder.ha-failed{animation:none;opacity:.7}
+@keyframes ha-img-pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@media(prefers-color-scheme:dark){.ha-img-placeholder{background:#27272a;border-color:#3f3f46;color:#a1a1aa}}
+</style>
+</head>
+
+<body>
+
+  <!-- Mobile sidebar toggle -->
+  <button class="sidebar-toggle" id="sidebarToggle" type="button" aria-label="Toggle navigation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="6" x2="21" y2="6"/>
+      <line x1="3" y1="12" x2="21" y2="12"/>
+      <line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a class="sidebar-logo" href="#">LEXOR</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle color theme" title="Toggle theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-group">
+        <div class="nav-group-title">Getting Started</div>
+        <ul>
+          <li><a href="#introduction">Introduction</a></li>
+          <li><a href="#first-program">Your First Program</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Language Basics</div>
+        <ul>
+          <li><a href="#program-structure">Program Structure</a></li>
+          <li><a href="#comments">Comments</a></li>
+          <li><a href="#variables">Variable Names</a></li>
+          <li><a href="#data-types">Data Types</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Operators</div>
+        <ul>
+          <li><a href="#operators">Operators</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Input & Output</div>
+        <ul>
+          <li><a href="#output">Output (PRINT)</a></li>
+          <li><a href="#input">Input (SCAN)</a></li>
+          <li><a href="#special-characters">Special Characters</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Control Flow</div>
+        <ul>
+          <li><a href="#if-else">If / Else</a></li>
+          <li><a href="#for-loop">For Loop</a></li>
+          <li><a href="#repeat-when">Repeat When</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-title">Reference</div>
+        <ul>
+          <li><a href="#sample-programs">Sample Programs</a></li>
+          <li><a href="#reserved-words">Reserved Words</a></li>
+        </ul>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <main class="docs-main">
+    <article class="docs-content">
+
+      <!-- ─── Introduction ─────────────────────────── -->
+      <section id="introduction">
+        <h1>LEXOR</h1>
+        <p class="lead">A strongly-typed programming language built to teach Senior High School students the fundamentals of programming.</p>
+
+        <p>LEXOR is implemented as a <strong>pure interpreter</strong> — code runs directly without a separate compilation step, making it well-suited for learning, experimentation, and quick feedback.</p>
+
+        <p>The language emphasises readability through capitalised reserved words and explicit block markers like <code>START SCRIPT</code> and <code>END SCRIPT</code>, helping new programmers visualise program structure clearly.</p>
+
+        <h3>At a glance</h3>
+        <ul>
+          <li><strong>Strongly typed</strong> — every variable has a declared type</li>
+          <li><strong>Pure interpreter</strong> — no compile step</li>
+          <li><strong>Capitalised reserved words</strong> for visual clarity</li>
+          <li><strong>Explicit block delimiters</strong> for every structure</li>
+        </ul>
+      </section>
+
+      <!-- ─── First Program ─────────────────────────── -->
+      <section id="first-program">
+        <h2>Your First Program</h2>
+        <p>Every LEXOR program follows the same shape. Here is the smallest meaningful program:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">SCRIPT AREA
+START SCRIPT
+    PRINT: "Hello, LEXOR"
+END SCRIPT</code></pre>
+        </div>
+
+        <div class="output-box">Hello, LEXOR</div>
+
+        <p>Three things are happening here:</p>
+        <ol>
+          <li><code>SCRIPT AREA</code> declares this file as an executable LEXOR script.</li>
+          <li><code>START SCRIPT</code> and <code>END SCRIPT</code> mark the boundaries of your code.</li>
+          <li><code>PRINT:</code> writes text to the output device.</li>
+        </ol>
+      </section>
+
+      <!-- ─── Program Structure ────────────────────── -->
+      <section id="program-structure">
+        <h2>Program Structure</h2>
+        <p>A LEXOR program has three required parts, in this order:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">SCRIPT AREA              %% 1. Script declaration
+START SCRIPT             %% 2. Begin script block
+    DECLARE INT x = 10   %% 3a. Variable declarations come FIRST
+    DECLARE CHAR ch = 'A'
+    x = x + 5            %% 3b. Then executable code
+    PRINT: x
+END SCRIPT</code></pre>
+        </div>
+
+        <h3>Rules</h3>
+        <ul>
+          <li>Every program starts with <code>SCRIPT AREA</code>.</li>
+          <li>All code lives between <code>START SCRIPT</code> and <code>END SCRIPT</code>.</li>
+          <li><strong>Variable declarations must come first</strong> — they cannot appear after executable code.</li>
+          <li>Each line contains exactly one statement.</li>
+          <li>All reserved words are CAPITALISED and cannot be used as variable names.</li>
+        </ul>
+
+        <div class="callout">
+          <strong>Why declarations first?</strong> Because LEXOR is strongly typed, the interpreter needs to know the type of every variable before it sees any expression that uses it.
+        </div>
+      </section>
+
+      <!-- ─── Comments ─────────────────────────────── -->
+      <section id="comments">
+        <h2>Comments</h2>
+        <p>Comments begin with <code>%%</code> and continue to the end of the line. They can be placed anywhere in your program.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">%% This entire line is a comment
+SCRIPT AREA
+START SCRIPT
+    DECLARE INT x = 10  %% Comments work after statements too
+    PRINT: x
+END SCRIPT</code></pre>
+        </div>
+      </section>
+
+      <!-- ─── Variable Names ────────────────────────── -->
+      <section id="variables">
+        <h2>Variable Names</h2>
+        <p>LEXOR variable names follow these rules:</p>
+
+        <ul>
+          <li><strong>Case sensitive</strong> — <code>count</code> and <code>Count</code> are different variables.</li>
+          <li><strong>Must start with</strong> a letter (a&ndash;z, A&ndash;Z) or an underscore (<code>_</code>).</li>
+          <li><strong>Followed by</strong> any combination of letters, underscores, or digits.</li>
+          <li><strong>Cannot use</strong> reserved words (<code>PRINT</code>, <code>IF</code>, <code>INT</code>, etc.) as variable names.</li>
+        </ul>
+
+        <table>
+          <thead>
+            <tr><th>Valid</th><th>Invalid</th><th>Reason</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>x</code></td><td><code>1count</code></td><td>Cannot start with a digit</td></tr>
+            <tr><td><code>count</code></td><td><code>INT</code></td><td>Reserved word</td></tr>
+            <tr><td><code>_total</code></td><td><code>my-name</code></td><td>Hyphens not allowed</td></tr>
+            <tr><td><code>user_age</code></td><td><code>two words</code></td><td>Spaces not allowed</td></tr>
+            <tr><td><code>item1</code></td><td><code>$value</code></td><td>Symbols other than <code>_</code> not allowed</td></tr>
+            <tr><td><code>a_1</code></td><td></td><td></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ─── Data Types ────────────────────────────── -->
+      <section id="data-types">
+        <h2>Data Types</h2>
+        <p>LEXOR has four primitive data types. Every variable must be declared with an explicit type.</p>
+
+        <table>
+          <thead>
+            <tr><th>Type</th><th>Description</th><th>Size</th><th>Example</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>INT</code></td><td>Whole number, no decimals</td><td>4 bytes</td><td><code>DECLARE INT x = 10</code></td></tr>
+            <tr><td><code>FLOAT</code></td><td>Number with a decimal part</td><td>4 bytes</td><td><code>DECLARE FLOAT pi = 3.14</code></td></tr>
+            <tr><td><code>CHAR</code></td><td>A single character</td><td>—</td><td><code>DECLARE CHAR ch = 'A'</code></td></tr>
+            <tr><td><code>BOOL</code></td><td>Logical TRUE or FALSE</td><td>—</td><td><code>DECLARE BOOL ok = "TRUE"</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>Declaring multiple variables</h3>
+        <p>You can declare several variables of the same type on a single line:</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">DECLARE INT x, y, z = 5</code></pre>
+        </div>
+
+        <p>This declares three <code>INT</code> variables. <code>x</code> and <code>y</code> are uninitialised; <code>z</code> starts at <code>5</code>.</p>
+      </section>
+
+      <!-- ─── Operators ────────────────────────────── -->
+      <section id="operators">
+        <h2>Operators</h2>
+        <p>LEXOR supports four categories of operators.</p>
+
+        <h3>Arithmetic</h3>
+        <table>
+          <thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td><code>( )</code></td><td>Parentheses (grouping)</td><td><code>(a + b) * c</code></td></tr>
+            <tr><td><code>*</code></td><td>Multiplication</td><td><code>x * 2</code></td></tr>
+            <tr><td><code>/</code></td><td>Division</td><td><code>total / 3</code></td></tr>
+            <tr><td><code>%</code></td><td>Modulo (remainder)</td><td><code>n % 2</code></td></tr>
+            <tr><td><code>+</code></td><td>Addition</td><td><code>a + b</code></td></tr>
+            <tr><td><code>-</code></td><td>Subtraction</td><td><code>a - b</code></td></tr>
+          </tbody>
+        </table>
+
+        <h3>Comparison</h3>
+        <table>
+          <thead><tr><th>Operator</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>&gt;</code></td><td>Greater than</td></tr>
+            <tr><td><code>&lt;</code></td><td>Less than</td></tr>
+            <tr><td><code>&gt;=</code></td><td>Greater than or equal to</td></tr>
+            <tr><td><code>&lt;=</code></td><td>Less than or equal to</td></tr>
+            <tr><td><code>==</code></td><td>Equal</td></tr>
+            <tr><td><code>&lt;&gt;</code></td><td>Not equal</td></tr>
+          </tbody>
+        </table>
+
+        <h3>Logical</h3>
+        <p>Logical operators take BOOL expressions and return a BOOL result.</p>
+        <table>
+          <thead><tr><th>Operator</th><th>Returns TRUE when</th></tr></thead>
+          <tbody>
+            <tr><td><code>AND</code></td><td>Both operands are TRUE</td></tr>
+            <tr><td><code>OR</code></td><td>At least one operand is TRUE</td></tr>
+            <tr><td><code>NOT</code></td><td>The operand is FALSE (unary, prefix)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">DECLARE BOOL result = "FALSE"
+result = (x &gt; 0 AND y &lt; 10)
+result = NOT result</code></pre>
+        </div>
+
+        <h3>Unary</h3>
+        <p>Unary operators are applied to a single value.</p>
+        <table>
+          <thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td><code>+</code></td><td>Positive</td><td><code>+5</code></td></tr>
+            <tr><td><code>-</code></td><td>Negative</td><td><code>-5</code></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ─── Output ───────────────────────────────── -->
+      <section id="output">
+        <h2>Output: PRINT</h2>
+        <p><code>PRINT:</code> writes formatted output to the screen.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">PRINT: "Hello, World"
+PRINT: x
+PRINT: x &amp; " items: " &amp; total</code></pre>
+        </div>
+
+        <p>Multiple values are joined together using the concatenator <code>&amp;</code>. See the <a href="#special-characters">Special Characters</a> section for the full set of formatting tools.</p>
+      </section>
+
+      <!-- ─── Input ────────────────────────────────── -->
+      <section id="input">
+        <h2>Input: SCAN</h2>
+        <p><code>SCAN:</code> reads values from the user into one or more variables.</p>
+
+        <h3>Syntax</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>syntax</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code>SCAN: &lt;variableName&gt;[, &lt;variableName&gt;]*</code></pre>
+        </div>
+
+        <h3>Example</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">DECLARE INT x, y
+SCAN: x, y
+PRINT: x + y</code></pre>
+        </div>
+
+        <p>When this runs, the user types two values separated by a comma — e.g. <code>10, 20</code> — and the program prints <code>30</code>.</p>
+      </section>
+
+      <!-- ─── Special Characters ──────────────────── -->
+      <section id="special-characters">
+        <h2>Special Characters</h2>
+        <p>LEXOR provides three special print constructs that work alongside <code>PRINT:</code>.</p>
+
+        <table>
+          <thead><tr><th>Symbol</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><code>&amp;</code></td><td><strong>Concatenator</strong> — joins values together into one output</td></tr>
+            <tr><td><code>$</code></td><td><strong>Newline</strong> (carriage return) — moves to the next line</td></tr>
+            <tr><td><code>[ ]</code></td><td><strong>Escape code</strong> — outputs the literal character inside the brackets</td></tr>
+          </tbody>
+        </table>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">DECLARE INT x = 5
+DECLARE CHAR a = 'c'
+PRINT: x &amp; "TRUE5" &amp; $ &amp; a &amp; [#] &amp; "last"</code></pre>
+        </div>
+
+        <div class="output-box">5TRUE5
+c#last</div>
+      </section>
+
+      <!-- ─── If / Else ────────────────────────────── -->
+      <section id="if-else">
+        <h2>If / Else</h2>
+        <p>The condition inside <code>(...)</code> must be a BOOL expression. Each branch is wrapped in <code>START IF</code> and <code>END IF</code>.</p>
+
+        <h3>Simple if</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">IF (x &gt; 0)
+START IF
+    PRINT: "positive"
+END IF</code></pre>
+        </div>
+
+        <h3>If / else</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">IF (x &gt; 0)
+START IF
+    PRINT: "positive"
+END IF
+ELSE
+START IF
+    PRINT: "non-positive"
+END IF</code></pre>
+        </div>
+
+        <h3>If / else if / else</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">IF (x &gt; 0)
+START IF
+    PRINT: "positive"
+END IF
+ELSE IF (x &lt; 0)
+START IF
+    PRINT: "negative"
+END IF
+ELSE
+START IF
+    PRINT: "zero"
+END IF</code></pre>
+        </div>
+      </section>
+
+      <!-- ─── For Loop ────────────────────────────── -->
+      <section id="for-loop">
+        <h2>For Loop</h2>
+        <p>The three parts in parentheses are <strong>initialisation</strong>, <strong>condition</strong>, and <strong>update</strong>, separated by commas.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">FOR (i = 1, i &lt;= 10, i = i + 1)
+START FOR
+    PRINT: i &amp; $
+END FOR</code></pre>
+        </div>
+
+        <p>This loop prints the numbers from <code>1</code> to <code>10</code>, each on its own line.</p>
+      </section>
+
+      <!-- ─── Repeat When ─────────────────────────── -->
+      <section id="repeat-when">
+        <h2>Repeat When</h2>
+        <p><code>REPEAT WHEN</code> runs as long as the condition stays TRUE — equivalent to a <code>while</code> loop in other languages.</p>
+
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">DECLARE INT n = 1
+REPEAT WHEN (n &lt;= 5)
+START REPEAT
+    PRINT: n &amp; $
+    n = n + 1
+END REPEAT</code></pre>
+        </div>
+
+        <div class="output-box">1
+2
+3
+4
+5</div>
+      </section>
+
+      <!-- ─── Sample Programs ─────────────────────── -->
+      <section id="sample-programs">
+        <h2>Sample Programs</h2>
+        <p>Three complete examples drawn from the LEXOR language specification.</p>
+
+        <h3>1. Mixed variables and output</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">%% this is a sample program in LEXOR
+SCRIPT AREA
+START SCRIPT
+    DECLARE INT x, y, z = 5
+    DECLARE CHAR a_1 = 'n'
+    DECLARE BOOL t = "TRUE"
+    x = y = 4
+    a_1 = 'c'
+    %% this is a comment
+    PRINT: x &amp; t &amp; z &amp; $ &amp; a_1 &amp; [#] &amp; "last"
+END SCRIPT</code></pre>
+        </div>
+
+        <div class="output-box">4TRUE5
+c#last</div>
+
+        <h3>2. Arithmetic operations</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">SCRIPT AREA
+START SCRIPT
+    DECLARE INT xyz, abc = 100
+    xyz = ((abc * 5) / 10 + 10) * -1
+    PRINT: [[] &amp; xyz &amp; []]
+END SCRIPT</code></pre>
+        </div>
+
+        <div class="output-box">[-60]</div>
+
+        <p>The <code>[[]</code> and <code>[]]</code> constructs print literal <code>[</code> and <code>]</code> characters around the value of <code>xyz</code>.</p>
+
+        <h3>3. Logical operations</h3>
+        <div class="code-block">
+          <div class="code-block-header">
+            <span>lexor</span>
+            <button class="code-copy" type="button">
+              <span class="copy-icon"></span>
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre><code class="lang-lexor">SCRIPT AREA
+START SCRIPT
+    DECLARE INT a = 100, b = 200, c = 300
+    DECLARE BOOL d = "FALSE"
+    d = (a &lt; b AND c &lt;&gt; 200)
+    PRINT: d
+END SCRIPT</code></pre>
+        </div>
+
+        <div class="output-box">TRUE</div>
+      </section>
+
+      <!-- ─── Reserved Words ──────────────────────── -->
+      <section id="reserved-words">
+        <h2>Reserved Words</h2>
+        <p>These keywords are reserved by the language and cannot be used as variable names.</p>
+
+        <table>
+          <thead>
+            <tr><th>Keyword</th><th>Used in</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>AND</code></td><td>Logical operator</td></tr>
+            <tr><td><code>BOOL</code></td><td>Data type</td></tr>
+            <tr><td><code>CHAR</code></td><td>Data type</td></tr>
+            <tr><td><code>DECLARE</code></td><td>Variable declaration</td></tr>
+            <tr><td><code>ELSE</code></td><td>Conditional branch</td></tr>
+            <tr><td><code>END FOR</code></td><td>Closes a FOR loop</td></tr>
+            <tr><td><code>END IF</code></td><td>Closes an IF block</td></tr>
+            <tr><td><code>END REPEAT</code></td><td>Closes a REPEAT block</td></tr>
+            <tr><td><code>END SCRIPT</code></td><td>Ends the program</td></tr>
+            <tr><td><code>FALSE</code></td><td>Boolean literal</td></tr>
+            <tr><td><code>FLOAT</code></td><td>Data type</td></tr>
+            <tr><td><code>FOR</code></td><td>Loop</td></tr>
+            <tr><td><code>IF</code></td><td>Conditional</td></tr>
+            <tr><td><code>INT</code></td><td>Data type</td></tr>
+            <tr><td><code>NOT</code></td><td>Logical operator</td></tr>
+            <tr><td><code>OR</code></td><td>Logical operator</td></tr>
+            <tr><td><code>PRINT</code></td><td>Output</td></tr>
+            <tr><td><code>REPEAT</code></td><td>Loop</td></tr>
+            <tr><td><code>SCAN</code></td><td>Input</td></tr>
+            <tr><td><code>SCRIPT</code></td><td>Program block</td></tr>
+            <tr><td><code>SCRIPT AREA</code></td><td>Program declaration</td></tr>
+            <tr><td><code>START FOR</code></td><td>Opens a FOR loop body</td></tr>
+            <tr><td><code>START IF</code></td><td>Opens an IF block body</td></tr>
+            <tr><td><code>START REPEAT</code></td><td>Opens a REPEAT block body</td></tr>
+            <tr><td><code>START SCRIPT</code></td><td>Begins the program body</td></tr>
+            <tr><td><code>TRUE</code></td><td>Boolean literal</td></tr>
+            <tr><td><code>WHEN</code></td><td>Loop condition (REPEAT WHEN)</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <footer class="docs-footer">
+        <span>LEXOR — Language Specification v0.1</span>
+        <a href="../index.html">← Back to Orphinel</a>
+      </footer>
+
+    </article>
+  </main>
+
+  <script>
+/**
+ * Docs page entry point.
+ * Theme toggle, mobile sidebar drawer, active-section tracking,
+ * copy-to-clipboard, and LEXOR syntax highlighting.
+ */
+
+// ── Theme Toggle ──
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+
+const ICON_MOON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+const ICON_SUN =
+  '<circle cx="12" cy="12" r="4"/>' +
+  '<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>';
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  themeIcon.innerHTML = theme === 'dark' ? ICON_SUN : ICON_MOON;
+  try { localStorage.setItem('orphinel-theme', theme); } catch (e) { /* ignore */ }
+}
+
+function getCurrentTheme() {
+  return document.documentElement.getAttribute('data-theme') || 'dark';
+}
+
+themeToggle.addEventListener('click', () => {
+  applyTheme(getCurrentTheme() === 'dark' ? 'light' : 'dark');
+});
+
+applyTheme(getCurrentTheme());
+
+// ── Mobile Sidebar Drawer ──
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+function setSidebarOpen(open) {
+  document.body.classList.toggle('sidebar-open', open);
+}
+
+if (sidebarToggle) {
+  sidebarToggle.addEventListener('click', () => {
+    setSidebarOpen(!document.body.classList.contains('sidebar-open'));
+  });
+}
+if (sidebarBackdrop) {
+  sidebarBackdrop.addEventListener('click', () => setSidebarOpen(false));
+}
+
+// Close drawer when a sidebar link is clicked (mobile)
+document.querySelectorAll('.sidebar-nav a').forEach(a => {
+  a.addEventListener('click', () => {
+    if (window.innerWidth <= 920) setSidebarOpen(false);
+  });
+});
+
+// ── Active Section Tracking via IntersectionObserver ──
+const sections = Array.from(document.querySelectorAll('.docs-content section[id]'));
+const sidebarLinks = new Map();
+document.querySelectorAll('.sidebar-nav a[href^="#"]').forEach(a => {
+  const id = a.getAttribute('href').slice(1);
+  sidebarLinks.set(id, a);
+});
+
+function setActive(id) {
+  sidebarLinks.forEach(a => a.classList.remove('active'));
+  const link = sidebarLinks.get(id);
+  if (link) {
+    link.classList.add('active');
+    // Keep the active link visible in the sidebar scrollport
+    const navEl = document.querySelector('.sidebar-nav');
+    const linkRect = link.getBoundingClientRect();
+    const navRect = navEl.getBoundingClientRect();
+    if (linkRect.top < navRect.top || linkRect.bottom > navRect.bottom) {
+      link.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }
+}
+
+const observer = new IntersectionObserver((entries) => {
+  // Find the entry closest to the top that is intersecting
+  const visible = entries
+    .filter(e => e.isIntersecting)
+    .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+  if (visible.length > 0) {
+    setActive(visible[0].target.id);
+  }
+}, {
+  rootMargin: '-10% 0px -75% 0px',
+  threshold: 0,
+});
+
+sections.forEach(s => observer.observe(s));
+
+// On hash change / initial load, manually set active to the hash
+function activateFromHash() {
+  if (location.hash) {
+    const id = location.hash.slice(1);
+    if (sidebarLinks.has(id)) setActive(id);
+  } else if (sections.length > 0) {
+    setActive(sections[0].id);
+  }
+}
+activateFromHash();
+window.addEventListener('hashchange', activateFromHash);
+
+// ── LEXOR Syntax Highlighter ──
+const LEXOR_KEYWORDS = new Set([
+  'SCRIPT', 'AREA', 'START', 'END',
+  'DECLARE',
+  'INT', 'CHAR', 'BOOL', 'FLOAT',
+  'IF', 'ELSE',
+  'FOR',
+  'REPEAT', 'WHEN',
+  'PRINT', 'SCAN',
+  'AND', 'OR', 'NOT',
+  'TRUE', 'FALSE',
+]);
+
+function escapeHtml(s) {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+function highlightLexor(code) {
+  let html = '';
+  let i = 0;
+  const len = code.length;
+
+  while (i < len) {
+    const c = code[i];
+
+    // Comment: %% ... end of line
+    if (c === '%' && code[i + 1] === '%') {
+      let end = code.indexOf('\n', i);
+      if (end === -1) end = len;
+      html += '<span class="tok-comment">' + escapeHtml(code.substring(i, end)) + '</span>';
+      i = end;
+      continue;
+    }
+
+    // Strings: "..." or '...'
+    if (c === '"' || c === "'") {
+      const quote = c;
+      let j = i + 1;
+      while (j < len && code[j] !== quote && code[j] !== '\n') {
+        if (code[j] === '\\' && j + 1 < len) { j += 2; } else { j++; }
+      }
+      if (j < len && code[j] === quote) j++;
+      html += '<span class="tok-string">' + escapeHtml(code.substring(i, j)) + '</span>';
+      i = j;
+      continue;
+    }
+
+    // Numbers
+    if (c >= '0' && c <= '9') {
+      let j = i;
+      while (j < len && ((code[j] >= '0' && code[j] <= '9') || code[j] === '.')) j++;
+      html += '<span class="tok-number">' + escapeHtml(code.substring(i, j)) + '</span>';
+      i = j;
+      continue;
+    }
+
+    // Identifiers & keywords
+    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c === '_') {
+      let j = i;
+      while (j < len) {
+        const ch = code[j];
+        if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') ||
+            (ch >= '0' && ch <= '9') || ch === '_') {
+          j++;
+        } else break;
+      }
+      const word = code.substring(i, j);
+      if (LEXOR_KEYWORDS.has(word)) {
+        html += '<span class="tok-keyword">' + escapeHtml(word) + '</span>';
+      } else {
+        html += escapeHtml(word);
+      }
+      i = j;
+      continue;
+    }
+
+    // Passthrough
+    html += escapeHtml(c);
+    i++;
+  }
+
+  return html;
+}
+
+document.querySelectorAll('pre code.lang-lexor').forEach(el => {
+  const raw = el.textContent;
+  el.innerHTML = highlightLexor(raw);
+});
+
+// ── Copy buttons ──
+const COPY_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+const CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+document.querySelectorAll('.code-copy').forEach(btn => {
+  const labelDefault = btn.querySelector('.copy-label');
+  btn.querySelector('.copy-icon').innerHTML = COPY_ICON;
+
+  btn.addEventListener('click', async () => {
+    const block = btn.closest('.code-block');
+    const code = block.querySelector('pre code')?.textContent || '';
+    try {
+      await navigator.clipboard.writeText(code);
+      btn.classList.add('copied');
+      btn.querySelector('.copy-icon').innerHTML = CHECK_ICON;
+      if (labelDefault) labelDefault.textContent = 'Copied';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.querySelector('.copy-icon').innerHTML = COPY_ICON;
+        if (labelDefault) labelDefault.textContent = 'Copy';
+      }, 1600);
+    } catch (e) { /* clipboard blocked */ }
+  });
+});
+
+</script>
+<script>
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && window.parent !== window) {
+    window.parent.postMessage({ type: 'close-fullscreen' }, '*');
+  }
+});
+</script>
+<!-- broken-img-handler -->
+<script>
+(function(){
+  if(window.__brokenImgHandler)return;
+  window.__brokenImgHandler=true;
+  var MAX=5,DELAYS=[2000,4000,8000,16000,32000];
+  document.addEventListener('error',function(e){
+    var img=e.target;
+    if(!img||img.tagName!=='IMG')return;
+    var liveSrc=img.getAttribute('src');
+    var src=img.dataset.haOriginalSrc||liveSrc;
+    if(!src)return;
+    if(img.dataset.haOriginalSrc&&liveSrc&&liveSrc!==img.dataset.haOriginalSrc&&liveSrc.indexOf('_r=')<0){src=liveSrc;img.dataset.haOriginalSrc=src;img.dataset.haRetryCount='0'}
+    else if(!img.dataset.haOriginalSrc){img.dataset.haOriginalSrc=src}
+    var attempt=parseInt(img.dataset.haRetryCount||'0',10);
+    if(img.dataset.haPhId){var old=document.getElementById(img.dataset.haPhId);if(old)old.remove()}
+    var ph=document.createElement('div');
+    ph.className='ha-img-placeholder'+(attempt>=MAX?' ha-failed':'');
+    ph.id='ha-ph-'+Math.random().toString(36).slice(2,9);
+    var w=img.getAttribute('width');var h=img.getAttribute('height');
+    if(w)ph.style.width=w+(isNaN(Number(w))?'':'px');
+    else if(img.style.width)ph.style.width=img.style.width;
+    else if(img.width>1)ph.style.width=img.width+'px';
+    if(h)ph.style.height=h+(isNaN(Number(h))?'':'px');
+    else if(img.style.height)ph.style.height=img.style.height;
+    else if(img.height>1)ph.style.height=img.height+'px';
+    ph.textContent=attempt>=MAX?'Image unavailable':'Loading image\u2026';
+    img.dataset.haPhId=ph.id;
+    if(img.dataset.haOrigDisplay==null)img.dataset.haOrigDisplay=img.style.display||'';
+    img.style.display='none';
+    img.insertAdjacentElement('afterend',ph);
+    if(attempt<MAX){
+      img.dataset.haRetryCount=String(attempt+1);
+      setTimeout(function(){
+        if(!img.isConnected)return;
+        if(img.dataset.haOriginalSrc!==src)return;
+        if(img.complete&&img.naturalWidth>0)return;
+        var curSrc=img.getAttribute('src');
+        if(curSrc&&curSrc.indexOf(src)!==0)return;
+        var fresh=src+(src.indexOf('?')>=0?'&':'?')+'_r='+(attempt+1)+'_'+Date.now();
+        img.src=fresh;
+      },DELAYS[attempt]);
+    }
+  },true);
+  document.addEventListener('load',function(e){
+    var img=e.target;
+    if(!img||img.tagName!=='IMG')return;
+    if(img.dataset.haPhId){
+      var ph=document.getElementById(img.dataset.haPhId);
+      if(ph)ph.remove();
+      delete img.dataset.haPhId;
+      img.style.display=img.dataset.haOrigDisplay||'';
+      delete img.dataset.haOrigDisplay;
+      delete img.dataset.haOriginalSrc;
+      delete img.dataset.haRetryCount;
+    }
+  },true);
+})();
+</script>
+</body>
+</html>
